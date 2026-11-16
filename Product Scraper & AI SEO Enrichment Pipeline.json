@@ -1,0 +1,492 @@
+{
+  "name": "Product Scraper & AI SEO Enrichment Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Product Scraper",
+        "formDescription": "Enter a product URL to extract product information.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Product URL",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "55a3ce44-a3bf-4378-aee7-ba6f15293d21",
+      "name": "On form submission",
+      "webhookId": "14a3ed6f-b94c-4df0-b940-4a8efc29a6a8"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['Product URL'] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": " User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "1af3852a-a471-400c-8f18-639469a2566c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": " title",
+              "cssSelector": "h4:not(.price)",
+              "returnValue": "attribute"
+            },
+            {
+              "key": "price",
+              "cssSelector": "h4.price",
+              "returnValue": "attribute"
+            },
+            {
+              "key": "description",
+              "cssSelector": "p.description",
+              "returnValue": "attribute"
+            },
+            {
+              "key": "image_urls",
+              "cssSelector": "img.img-responsive",
+              "returnValue": "attribute",
+              "attribute": "src",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "372573be-383a-4278-91fa-85bcf7c71b28",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1AOFTk6HzpX-w7kfWPjj4HhnLhc3LLcS4EnrxNxHzWFw",
+          "mode": "list",
+          "cachedResultName": "Product Scraper",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AOFTk6HzpX-w7kfWPjj4HhnLhc3LLcS4EnrxNxHzWFw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AOFTk6HzpX-w7kfWPjj4HhnLhc3LLcS4EnrxNxHzWFw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            " title": "={{ $json.title }}",
+            "description_html": "={{ $json.description_html }}",
+            "meta_title": "={{ $json.meta_title }}",
+            "meta_description": "={{ $json.meta_description }}",
+            "tags_string": "={{ $json.tags_string }}",
+            "handle": "={{ $json.handle }}",
+            "source_url": "={{ $json.source_url }}",
+            "raw_price": "={{ $json.raw_price }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": " title",
+              "displayName": " title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "description_html",
+              "displayName": "description_html",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "meta_title",
+              "displayName": "meta_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "meta_description",
+              "displayName": "meta_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tags_string",
+              "displayName": "tags_string",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "handle",
+              "displayName": "handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "source_url",
+              "displayName": "source_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "raw_price",
+              "displayName": "raw_price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1376,
+        0
+      ],
+      "id": "77c49ad5-8963-4ada-9d89-82515e207c18",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "TS3ZPA04wNY8VQd1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are an expert e-commerce SEO copywriter.\n\nProduct Info:\nTitle: {{ $json.clean_title }}\nDescription: {{ $json.clean_description }}\nPrice: {{ $json.raw_price }}\n\nTransform into high-converting listing.\nRules:\n1. Title max 60 chars, no competitor brand\n2. description_html with <h3>, <p>, <ul><li>\n3. meta_title 50-60 chars\n4. meta_description 140-155 chars with CTA\n5. tags 5-8\n6. handle kebab-case\n\nRespond ONLY with valid JSON:\n{\"title\":\"\",\"description_html\":\"\",\"meta_title\":\"\",\"meta_description\":\"\",\"tags\":[],\"handle\":\"\"}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        0
+      ],
+      "id": "d5fb30b2-2cd7-4d69-b50e-45c33fb4901e",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst form = $('On form submission').first().json;\nconst base = String(form['Product URL'] || '').trim();\n\nreturn items.map(item => {\n  const raw = item.json;\n\n  let images = raw.image_urls || [];\n  if (!Array.isArray(images)) images = [images];\n\n  const fixed = images\n    .map(u => {\n      try { return new URL(String(u).trim(), base).href; }\n      catch (e) { return ''; }\n    })\n    .filter(u => u.startsWith('http'));\n\n  return {\n    json: {\n      source_url: base,\n      clean_title: String(raw.title || '').trim(),\n      clean_description: String(raw.description || '')\n        .replace(/<[^>]*>/g, ' ')\n        .replace(/\\s+/g, ' ')\n        .trim(),\n      raw_price: String(raw.price || '').replace(/[^0-9.]/g, ''),\n      debug_input_keys: Object.keys(raw),\n      debug_image_urls: raw.image_urls,\n      gallery_images: [...new Set(fixed)].slice(0, 5)\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "e6ce96bc-92fb-4965-b61e-87099da9d306",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst prev = $('Code in JavaScript').first().json;\n\nreturn items.map(item => {\n  const j = item.json;\n  let text = '';\n\n  if (Array.isArray(j.output) && j.output[0]?.content) {\n    const c = j.output[0].content;\n    text = Array.isArray(c) ? (c[0]?.text || c[0]?.content || '') : (c.text || c);\n  } else if (typeof j.message?.content === 'string') {\n    text = j.message.content;\n  } else if (Array.isArray(j.message?.content)) {\n    text = j.message.content.map(x => x.text || x.content || '').join('');\n  } else if (typeof j.output === 'string') {\n    text = j.output;\n  } else if (typeof j.text === 'string') {\n    text = j.text;\n  }\n\n  if (typeof text !== 'string') text = JSON.stringify(text || '');\n\n  const clean = text.replace(/```json|```/g, '').trim();\n\n  let out;\n  try {\n    out = JSON.parse(clean);\n  } catch (e) {\n    throw new Error('AI ne valid JSON nahi diya: ' + clean.slice(0, 200));\n  }\n\n  const tags = Array.isArray(out.tags)\n    ? out.tags\n    : String(out.tags || '').split(',').map(t => t.trim()).filter(Boolean);\n\n  return {\n    json: {\n      title: String(out.title || '').slice(0, 60),\n      description_html: out.description_html || '',\n      meta_title: out.meta_title || '',\n      meta_description: out.meta_description || '',\n      tags,\n      tags_string: tags.join(', '),\n      handle: out.handle || '',\n      source_url: prev.source_url,\n      raw_price: prev.raw_price,\n      gallery_images: prev.gallery_images,\n      images: (prev.gallery_images || []).map(src => ({ src }))\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        144
+      ],
+      "id": "5b5c779d-18d4-47a3-8b86-14d1f00ae9df",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rxihkc-1y.myshopify.com/admin/oauth/access_token",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "grant_type",
+              "value": "client_credentials"
+            },
+            {
+              "name": "client_id",
+              "value": "Ypur_Client _id"
+            },
+            {
+              "name": "client_secret",
+              "value": "Your_client_secret"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1600,
+        128
+      ],
+      "id": "c7162c87-7e17-4df7-9e10-e261a0ecce83",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rxihkc-1y.myshopify.com/admin/api/2025-01/graphql.json",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Shopify-Access-Token",
+              "value": "={{ $('HTTP Request1').item.json.access_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  query: `mutation productCreate($product: ProductCreateInput!, $media: [CreateMediaInput!]) {\n    productCreate(product: $product, media: $media) {\n      product { id title handle status }\n      userErrors { field message }\n    }\n  }`,\n  variables: {\n    product: {\n      title: $('Code in JavaScript1').item.json.title,\n      descriptionHtml: $('Code in JavaScript1').item.json.description_html,\n      handle: $('Code in JavaScript1').item.json.handle,\n      tags: $('Code in JavaScript1').item.json.tags,\n      status: \"DRAFT\",\n      seo: {\n        title: $('Code in JavaScript1').item.json.meta_title,\n        description: $('Code in JavaScript1').item.json.meta_description\n      }\n    },\n    media: $('Code in JavaScript1').item.json.gallery_images.map(url => ({\n      originalSource: url,\n      mediaContentType: \"IMAGE\"\n    }))\n  }\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1792,
+        -16
+      ],
+      "id": "c5a70a3e-24c1-4020-893c-4e431b3aaddf",
+      "name": "Create Shopify Product"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0CJ910F9G8",
+          "mode": "list",
+          "cachedResultName": "all-product-alerts"
+        },
+        "text": "= New Draft Product Enriched\n\nTitle: {{ $('Code in JavaScript1').item.json.title }}\nOriginal URL: {{ $('Code in JavaScript1').item.json.source_url }}\nStore Admin Link: https://admin.shopify.com/store/rxihkc-1y/products/{{ $('Create Shopify Product').item.json.data.productCreate.product.id.split('/').pop() }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        2016,
+        -16
+      ],
+      "id": "7f297c95-9aa0-4f9d-9e13-7ab926f9d3a1",
+      "name": "Send a message",
+      "webhookId": "6745f1a1-07b8-4b19-ac03-c2a86b92b45c",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "JT6HJ0v0ryarofLN",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Create Shopify Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Shopify Product": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c612ece0-a50e-4d49-a96c-5b806d24c4d1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f282d96c3252d4bb3a98db5e5dd8f1f46fc004972d5a160072fdf521a761450f"
+  },
+  "nodeGroups": [],
+  "id": "c4dnoF3RfWxg5Dlz",
+  "tags": []
+}
